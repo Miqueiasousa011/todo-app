@@ -147,10 +147,10 @@ class _CreateAccountPageState extends State<CreateAccountPage>
           backgroundColor: AppColors.green,
           content: Text(
             msg,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,
-              color: AppColors.error,
+              color: Colors.white,
             ),
           ),
         ),

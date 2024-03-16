@@ -1,13 +1,13 @@
 class ToDoModel {
-  final int id;
-  final String title;
-  final String description;
-  final bool status;
+  int? id;
+  String? title;
+  String? description;
+  bool status;
 
   ToDoModel({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.status,
+    this.id,
+    this.title,
+    this.description,
+    this.status = false,
   });
 }

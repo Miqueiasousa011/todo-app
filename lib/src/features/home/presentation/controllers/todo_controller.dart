@@ -9,16 +9,15 @@ class ToDoController {
   ToDoController(this._toDoRepository);
 
   Future<void> createAccount(
-    String title,
-    String description, {
+    ToDoModel todo, {
     required void Function() onSuccess,
     required void Function(String failure) onFailure,
   }) async {
     try {
       await _toDoRepository.create(
         {
-          "title": title,
-          "description": description,
+          "title": todo.title,
+          "description": todo.description,
         },
       );
 
@@ -47,7 +46,7 @@ class ToDoController {
     required void Function(String failure) onFailure,
   }) async {
     try {
-      await _toDoRepository.delete(todo.id);
+      await _toDoRepository.delete(todo.id!);
       return onSuccess();
     } on AppException catch (e) {
       return onFailure(e.msg);

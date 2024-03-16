@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const devUrl = 'http://192.168.3.6:8080';
@@ -17,9 +18,9 @@ Dio customDio = Dio(
       onRequest: (options, handler) async {
         log('${options.path} - ${options.data}');
 
-        final prefs = await SharedPreferences.getInstance();
+        final prefs = Modular.get<SharedPreferences>();
 
-        if (prefs.get('isLogged') == true) {
+        if (prefs.containsKey('isLogged') && prefs.get('isLogged') == true) {
           final token = prefs.get('token');
           options.headers['Authorization'] = 'Bearer $token';
         }
