@@ -5,6 +5,7 @@ import 'package:todo_app/src/features/home/presentation/controllers/todo_control
 
 import 'package:todo_app/src/features/home/presentation/models/todo_model.dart';
 
+import '../../../../../core/mixins/app_helper.dart';
 import '../../../../../core/themes/themes.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,13 +15,45 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with AppHelper {
   late ToDoController _toDoController;
 
   @override
   void initState() {
     super.initState();
     _toDoController = Modular.get<ToDoController>();
+  }
+
+  void onDelete(ToDoModel todo) {
+    showLoading();
+    _toDoController.delete(
+      todo,
+      onSuccess: () {
+        removeLoading();
+        showSuccess("Tarefa excluída com sucesso!");
+        setState(() {});
+      },
+      onFailure: (e) {
+        removeLoading();
+        showError(e);
+      },
+    );
+  }
+
+  void onUpdate(ToDoModel todo) {
+    showLoading();
+    _toDoController.update(
+      todo.copyWith(status: !todo.status),
+      onSuccess: () {
+        removeLoading();
+        showSuccess("Tarefa atualizada com sucesso!");
+        setState(() {});
+      },
+      onFailure: (e) {
+        removeLoading();
+        showError(e);
+      },
+    );
   }
 
   @override
@@ -59,9 +92,9 @@ class _HomePageState extends State<HomePage> {
               children: [
                 ...todos.map(
                   (todo) => ToDoItem(
-                    onChanged: (p0) {},
+                    onChanged: (p0) => onUpdate(todo),
                     todo: todo,
-                    onDelete: () {},
+                    onDelete: () => onDelete(todo),
                     onUpdate: () {},
                   ),
                 )
@@ -72,6 +105,34 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  void showError(String error) => ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColors.backgroundError,
+          content: Text(
+            error,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: AppColors.error,
+            ),
+          ),
+        ),
+      );
+
+  void showSuccess(String msg) => ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColors.green,
+          content: Text(
+            msg,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      );
 }
 
 class ToDoItem extends StatelessWidget {
