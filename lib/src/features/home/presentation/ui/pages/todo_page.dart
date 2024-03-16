@@ -11,7 +11,9 @@ import '../../../../../core/mixins/loading_overlay_mixin.dart';
 import '../../../../../core/themes/themes.dart';
 
 class TodoPage extends StatefulWidget {
-  const TodoPage({super.key});
+  const TodoPage({super.key, this.toDoModel});
+
+  final ToDoModel? toDoModel;
 
   @override
   State<TodoPage> createState() => _TodoPageState();
@@ -21,17 +23,35 @@ class _TodoPageState extends State<TodoPage>
     with LoadingOverlayStateMixin, AppHelper, AppValidators {
   final formKey = GlobalKey<FormState>();
   late ToDoController _todoController;
-
   late ToDoModel toDoModel;
+  late TextEditingController titleTextController;
+  late TextEditingController descriptionTextController;
+
+  @override
+  void initState() {
+    super.initState();
+    titleTextController = TextEditingController();
+    descriptionTextController = TextEditingController();
+    _todoController = Modular.get<ToDoController>();
+
+    toDoModel = widget.toDoModel ?? ToDoModel();
+  }
+
+  initValues() {
+    if (widget.toDoModel != null) {
+      titleTextController.text = widget.toDoModel!.title!;
+      descriptionTextController.text = widget.toDoModel!.description!;
+    }
+  }
 
   void _onSubmitted() {
     if (formKey.currentState?.validate() == true) {
       showLoading();
       _todoController.createAccount(
         toDoModel,
-        onSuccess: () {
+        onSuccess: (e) {
           removeLoading();
-          showSuccess("Tarefa Criada com sucesso");
+          showSuccess(e);
           Modular.to.pop();
         },
         onFailure: (e) {
@@ -43,14 +63,15 @@ class _TodoPageState extends State<TodoPage>
   }
 
   @override
-  void initState() {
-    super.initState();
-    _todoController = Modular.get<ToDoController>();
-    toDoModel = ToDoModel();
+  void dispose() {
+    super.dispose();
+    titleTextController.dispose();
+    descriptionTextController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    initValues();
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(title: const Text('TODO')),
@@ -65,6 +86,7 @@ class _TodoPageState extends State<TodoPage>
               children: [
                 const SizedBox(height: AppSpacings.xxLarge),
                 InputComponent(
+                  controller: titleTextController,
                   label: 'Título',
                   hintText: 'Digite o título da tarefa',
                   onChanged: (v) {
@@ -74,6 +96,7 @@ class _TodoPageState extends State<TodoPage>
                 ),
                 const SizedBox(height: AppSpacings.medium),
                 InputComponent(
+                  controller: descriptionTextController,
                   label: 'Detalhes',
                   hintText: 'Digite os detalhes',
                   onChanged: (v) {

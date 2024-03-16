@@ -10,10 +10,15 @@ class ToDoController {
 
   Future<void> createAccount(
     ToDoModel todo, {
-    required void Function() onSuccess,
+    required void Function(String e) onSuccess,
     required void Function(String failure) onFailure,
   }) async {
     try {
+      if (todo.id != null) {
+        update(todo, onSuccess: onSuccess, onFailure: onFailure);
+        return;
+      }
+
       await _toDoRepository.create(
         {
           "title": todo.title,
@@ -21,7 +26,7 @@ class ToDoController {
         },
       );
 
-      return onSuccess();
+      return onSuccess("Tarefa Criada com sucesso");
     } on AppException catch (e) {
       return onFailure(e.msg);
     }
@@ -29,12 +34,12 @@ class ToDoController {
 
   Future<void> update(
     ToDoModel todo, {
-    required void Function() onSuccess,
+    required void Function(String e) onSuccess,
     required void Function(String failure) onFailure,
   }) async {
     try {
       await _toDoRepository.update(todo);
-      return onSuccess();
+      return onSuccess("Tarefa atualizada com sucesso");
     } on AppException catch (e) {
       return onFailure(e.msg);
     }

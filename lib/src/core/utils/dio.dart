@@ -16,7 +16,7 @@ Dio customDio = Dio(
 )..interceptors.add(
     InterceptorsWrapper(
       onRequest: (options, handler) async {
-        log('${options.path} - ${options.data}');
+        log('${options.path} - ${options.method} - ${options.data} ');
 
         final prefs = Modular.get<SharedPreferences>();
 

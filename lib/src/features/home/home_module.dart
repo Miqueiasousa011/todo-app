@@ -16,5 +16,6 @@ class HomeModule extends Module {
   List<ModularRoute> get routes => [
         ChildRoute('/', child: (context, args) => const HomePage()),
         ChildRoute('/todo', child: (context, args) => const TodoPage()),
+        ChildRoute('/todo-update', child: (context, args) => TodoPage(toDoModel: args.data)),
       ];
 }

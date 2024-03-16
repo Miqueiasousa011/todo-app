@@ -44,9 +44,9 @@ class _HomePageState extends State<HomePage> with AppHelper {
     showLoading();
     _toDoController.update(
       todo.copyWith(status: !todo.status),
-      onSuccess: () {
+      onSuccess: (e) {
         removeLoading();
-        showSuccess("Tarefa atualizada com sucesso!");
+        showSuccess(e);
         setState(() {});
       },
       onFailure: (e) {
@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> with AppHelper {
                     onChanged: (p0) => onUpdate(todo),
                     todo: todo,
                     onDelete: () => onDelete(todo),
-                    onUpdate: () {},
+                    onUpdate: () => Modular.to.pushNamed('/home/todo-update', arguments: todo),
                   ),
                 )
               ],
