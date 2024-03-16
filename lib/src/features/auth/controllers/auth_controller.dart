@@ -1,5 +1,8 @@
 import 'package:todo_app/src/features/auth/repository/auth_repository.dart';
 
+import '../../../core/utils/app_exception.dart';
+import '../models/account_form_model.dart';
+
 class AuthController {
   final AuthRepository _authRepository;
 
@@ -14,8 +17,26 @@ class AuthController {
     try {
       await _authRepository.login({"email": email, "password": password});
       return onSuccess();
-    } catch (e) {
-      return onFailure('Algo deu errado! Verifique suas credenciais');
+    } on AppException catch (e) {
+      return onFailure(e.msg);
+    }
+  }
+
+  Future<void> createAccount(
+    AccountFormModel model, {
+    required void Function() onSuccess,
+    required void Function(String failure) onFailure,
+  }) async {
+    try {
+      await _authRepository.create({
+        "name": model.name,
+        "email": model.email,
+        "password": model.password,
+      });
+
+      return onSuccess();
+    } on AppException catch (e) {
+      return onFailure(e.msg);
     }
   }
 }

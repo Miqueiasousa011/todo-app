@@ -42,7 +42,6 @@ class _LoginPageState extends State<LoginPage>
   void _onSubmitted() {
     if (formKey.currentState?.validate() == true) {
       showLoading();
-
       monadLogin(authController.login, emailTextController.text, passwordTextController.text);
     }
   }
