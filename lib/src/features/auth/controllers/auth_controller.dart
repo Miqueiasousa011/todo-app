@@ -1,3 +1,4 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_app/src/features/auth/repository/auth_repository.dart';
 
 import '../../../core/utils/app_exception.dart';
@@ -15,7 +16,11 @@ class AuthController {
     required void Function(String failure) onFailure,
   }) async {
     try {
-      await _authRepository.login({"email": email, "password": password});
+      final account = await _authRepository.login({"email": email, "password": password});
+
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setBool('isLogged', true);
+      prefs.setString('token', account.token);
       return onSuccess();
     } on AppException catch (e) {
       return onFailure(e.msg);

@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 const devUrl = 'http://192.168.3.6:8080';
 
@@ -15,10 +16,14 @@ Dio customDio = Dio(
     InterceptorsWrapper(
       onRequest: (options, handler) async {
         log('${options.path} - ${options.data}');
-        String? token;
-        if (token != null) {
+
+        final prefs = await SharedPreferences.getInstance();
+
+        if (prefs.get('isLogged') == true) {
+          final token = prefs.get('token');
           options.headers['Authorization'] = 'Bearer $token';
         }
+
         return handler.next(options);
       },
     ),
