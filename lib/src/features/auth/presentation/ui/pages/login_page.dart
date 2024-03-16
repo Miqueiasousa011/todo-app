@@ -27,9 +27,7 @@ class _LoginPageState extends State<LoginPage> with LoadingOverlayStateMixin {
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
-          padding: const EdgeInsets.all(
-            AppSpacings.medium,
-          ),
+          padding: const EdgeInsets.all(AppSpacings.medium),
           child: Form(
             key: formKey,
             child: Column(
@@ -59,6 +57,8 @@ class _LoginPageState extends State<LoginPage> with LoadingOverlayStateMixin {
                   onPressed: () {
                     SystemChannels.textInput.invokeMethod('TextInput.hide');
                     if (formKey.currentState?.validate() == true) {}
+
+                    Modular.to.navigate('/home');
                   },
                 ),
                 const SizedBox(height: 10),
