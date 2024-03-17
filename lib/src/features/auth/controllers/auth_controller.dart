@@ -12,6 +12,7 @@ class AuthController {
   Future<void> login(
     String email,
     String password, {
+    /// Função de alta ordem
     required void Function() onSuccess,
     required void Function(String failure) onFailure,
   }) async {

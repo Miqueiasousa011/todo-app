@@ -15,7 +15,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with AppHelper {
+class _HomePageState extends State<HomePage> with AppHelper, RouteAware {
   late ToDoController _toDoController;
 
   @override
@@ -38,6 +38,12 @@ class _HomePageState extends State<HomePage> with AppHelper {
         showError(e);
       },
     );
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    setState(() {});
   }
 
   void onUpdate(ToDoModel todo) {
@@ -88,18 +94,18 @@ class _HomePageState extends State<HomePage> with AppHelper {
               );
             }
 
-            return Column(
-              children: [
-                ...todos.map(
-                  (todo) => ToDoItem(
-                    onChanged: (p0) => onUpdate(todo),
-                    todo: todo,
-                    onDelete: () => onDelete(todo),
-                    onUpdate: () => Modular.to.pushNamed('/home/todo-update', arguments: todo),
-                  ),
-                )
-              ],
-            );
+            ///  List comprehension
+            final todoItems = [
+              for (final todoModel in todos)
+                ToDoItem(
+                  onChanged: (p0) => onUpdate(todoModel),
+                  todo: todoModel,
+                  onDelete: () => onDelete(todoModel),
+                  onUpdate: () => Modular.to.pushNamed('/home/todo-update', arguments: todoModel),
+                ),
+            ];
+
+            return Column(children: todoItems);
           },
         ),
       ),

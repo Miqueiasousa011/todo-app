@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_app/src/core/mixins/app_validators.dart';
 import 'package:todo_app/src/features/auth/controllers/auth_controller.dart';
 
@@ -39,6 +40,7 @@ class _LoginPageState extends State<LoginPage>
     authController = Modular.get<AuthController>();
   }
 
+  /// closure
   void _onSubmitted() {
     if (formKey.currentState?.validate() == true) {
       showLoading();
@@ -46,6 +48,7 @@ class _LoginPageState extends State<LoginPage>
     }
   }
 
+  /// Monad
   void monadLogin(
     LoginFunction login,
     String email,
@@ -107,7 +110,9 @@ class _LoginPageState extends State<LoginPage>
                 const SizedBox(height: 10),
                 OutlinedButton(
                   child: const Text('Criar Conta'),
-                  onPressed: () {
+                  onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    prefs.setBool('isLogged', false);
                     SystemChannels.textInput.invokeMethod('TextInput.hide');
                     Modular.to.pushNamed('/create-account');
                   },
@@ -120,6 +125,8 @@ class _LoginPageState extends State<LoginPage>
       ),
     );
   }
+
+  /// Função lambda
 
   void showError(String error) => ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
