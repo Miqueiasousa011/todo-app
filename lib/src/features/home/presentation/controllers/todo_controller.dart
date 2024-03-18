@@ -8,7 +8,7 @@ class ToDoController {
 
   ToDoController(this._toDoRepository);
 
-  Future<void> createAccount(
+  Future<void> create(
     ToDoModel todo, {
     required void Function(String e) onSuccess,
     required void Function(String failure) onFailure,
